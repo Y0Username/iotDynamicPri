@@ -59,7 +59,7 @@ def setup_topology():
         s1 = net.addSwitch('s1', cls=OVSKernelSwitch, failMode='standalone')
 
         # Connecting to VM interface
-        Intf('eth1', node=s1)
+        Intf('eth2', node=s1)
 
         log.info("Adding switch")
         s2 = net.addSwitch('s2', cls=OVSKernelSwitch)
