@@ -5,9 +5,7 @@ from mininet.cli import CLI
 from mininet.link import TCLink, Intf
 from mininet.log import setLogLevel
 import logging as log
-
-CONTROLLER_IP = '192.168.56.101'
-CONTROLLER_PORT = 6653
+from configs import *
 
 def setup_topology():
         """
@@ -18,23 +16,23 @@ def setup_topology():
         links = []
         net = Mininet(topo=None,
                       build=False,
-                      # ipBase=IP_SUBNET,
-                      # autoSetMacs=True,
+                      ipBase=IP_SUBNET,
+                      autoSetMacs=True,
                       )
 
         log.info('Adding controller')
-        controller = net.addController(name='c0',
+        c0 = net.addController(name='c0',
                                        controller=RemoteController,
                                        ip=CONTROLLER_IP,
                                        port=CONTROLLER_PORT,
                                        )
 
         # Adding a Standalone switch
-        switches[0] = net.addSwitch('s21', cls=OVSKernelSwitch, failMode='standalone')
+        #switches[0] = net.addSwitch('s21', cls=OVSKernelSwitch, failMode='standalone')
 
         # Connecting the standalone switch to the interface on the machine/VM
-        Intf('eth1', node=s21)
-        
+        #Intf('eth1', node=s21)
+
         for switch in range(1,8):
             sname = 's' + str(switch)
             log.info("Adding switch %s" % sname)
