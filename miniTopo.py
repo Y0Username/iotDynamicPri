@@ -3,6 +3,8 @@ from mininet.node import RemoteController, Host, OVSKernelSwitch
 from mininet.node import Switch, Link, Node
 from mininet.cli import CLI
 from mininet.link import TCLink, Intf
+from mininet.log import setLogLevel
+import logging as log
 
 CONTROLLER_IP = '192.168.56.101'
 CONTROLLER_PORT = 6653
@@ -13,8 +15,8 @@ def setup_topology():
         """
         net = Mininet(topo=None,
                            build=False,
-                           ipBase=IP_SUBNET,
-                           autoSetMacs=True,
+                           # ipBase=IP_SUBNET,
+                           # autoSetMacs=True,
                            )
 
         log.info('Adding controller')
@@ -55,19 +57,20 @@ def setup_topology():
         log.info("Adding switch %s" % sname)
         s = net.addSwitch(sname, cls=OVSKernelSwitch)
 
-        for host in range(1,2):
-            hname = 'h' + str(host)
-            log.info("Adding host %s" % hname)
-            h = net.addHost(hname)
+        # for host in range(1,2):
+        #     hname = 'h' + str(host)
+        #    log.info("Adding host %s" % hname)
+        h1 = net.addHost('h1')
+        h = net.addHost('h2')
 
         l = net.addLink('s1', 'h1',
                              cls=TCLink, bw=10
                              # , delay=_delay, jitter=_jitter, loss=_loss
                              )
-        l = net.addLink('s1', 'h2',
-                     cls=TCLink, bw=10
-                     # , delay=_delay, jitter=_jitter, loss=_loss
-                     )
+        l1 = net.addLink('s1', 'h2',
+                     	     cls=TCLink, bw=10
+                             # , delay=_delay, jitter=_jitter, loss=_loss
+                             )
 
         log.info('Starting network')
 
