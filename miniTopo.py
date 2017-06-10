@@ -16,7 +16,7 @@ def setup_topology():
         links = []
         net = Mininet(topo=None,
                       build=False,
-                      ipBase=IP_SUBNET,
+                      ipBase=IP_BASE,
                       autoSetMacs=True,
                       )
 
