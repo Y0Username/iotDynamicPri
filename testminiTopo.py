@@ -27,33 +27,6 @@ def setup_topology():
                                        port=CONTROLLER_PORT,
                                        )
 
-        '''
-        for switch in range(1,7):
-            sname = 's' + str(switch)
-            log.info("Adding switch %s" % sname)
-            s = net.addSwitch(sname, cls=OVSKernelSwitch)
-
-        for host in range(1,13):
-            hname = 'h' + str(host)
-            log.info("Adding host %s" % hname)
-            h = net.addHost(hname)
-
-        for link in self.topo.get_links():
-            from_link = link[0]
-            to_link = link[1]
-            log.debug("adding link from %s to %s" % (from_link, to_link))
-            attributes = link[2]
-            _bw = attributes.get('bw', 10)  # in Mbps
-            _delay = '%fms' % attributes.get('latency', 10)
-            _jitter = '1ms'
-            _loss = self.error_rate
-
-            l = self.net.addLink(self.net.get(from_link), self.net.get(to_link),
-                                 cls=TCLink, bw=_bw, delay=_delay, jitter=_jitter, loss=_loss
-                                 )
-            self.links.append(l)
-        '''
-
         #Adding a dummy switch for networking
         log.info("Adding standalone switch")
         s1 = net.addSwitch('s1', cls=OVSKernelSwitch, failMode='standalone')
