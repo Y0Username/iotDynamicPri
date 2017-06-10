@@ -29,6 +29,12 @@ def setup_topology():
                                        port=CONTROLLER_PORT,
                                        )
 
+        # Adding a Standalone switch
+        switches[0] = net.addSwitch('s21', cls=OVSKernelSwitch, failMode='standalone')
+
+        # Connecting the standalone switch to the interface on the machine/VM
+        Intf('eth1', node=s21)
+        
         for switch in range(1,8):
             sname = 's' + str(switch)
             log.info("Adding switch %s" % sname)
