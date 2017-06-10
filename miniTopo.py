@@ -29,13 +29,13 @@ def setup_topology():
                                        port=CONTROLLER_PORT,
                                        )
 
-        for switch in range(1,7):
+        for switch in range(1,8):
             sname = 's' + str(switch)
             log.info("Adding switch %s" % sname)
             s = net.addSwitch(sname, cls=OVSKernelSwitch)
             switches.append(s)
 
-        for host in range(1,14):
+        for host in range(1,15):
             hname = 'h' + str(host)
             log.info("Adding host %s" % hname)
             h = net.addHost(hname)
@@ -49,7 +49,7 @@ def setup_topology():
                         ['s6', 'h9', 10 ], ['s6', 'h10',10 ], ['s6', 'h11',10 ],
                         ['s7', 'h12',10 ], ['s7', 'h13',10 ], ['s7', 'h14',10 ],
                         ]
-        for link in manual_links():
+        for link in manual_links:
             from_link = link[0]
             to_link = link[1]
             log.debug("Adding link from %s to %s" % (from_link, to_link))
@@ -61,7 +61,7 @@ def setup_topology():
             _loss = error_rate
             '''
             l = net.addLink(net.get(from_link), net.get(to_link),
-                                   cls=TCLink, bw=_bw
+                                   cls=TCLink, bw=bw
                                    # , delay=_delay, jitter=_jitter, loss=_loss
                                    )
             links.append(l)
