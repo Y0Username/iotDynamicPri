@@ -21,7 +21,7 @@ def setup_topology():
                       )
 
         log.info('Adding controller')
-        controller = net.addController(name='c0',
+        c0 = net.addController(name='c0',
                                        controller=RemoteController,
                                        ip=CONTROLLER_IP,
                                        port=CONTROLLER_PORT,
@@ -62,14 +62,14 @@ def setup_topology():
         Intf('eth1', node=s1)
 
         log.info("Adding switch")
-        s2 = net.addSwitch(sname, cls=OVSKernelSwitch)
+        s2 = net.addSwitch('s2', cls=OVSKernelSwitch)
 
         log.info("Adding hosts")
         h1 = net.addHost('h1')
         h2 = net.addHost('h2')
 
         log.info("Adding links")
-        l1 = net.addLink(s2, h1,
+        l1 = net.addLink(h1, s2, intfName1='h1-eth0',
                              cls=TCLink, bw=10
                              # , delay=_delay, jitter=_jitter, loss=_loss
                              )
@@ -83,13 +83,21 @@ def setup_topology():
         # Build the network.
         log.info('Building network')
         net.build()
-
-        # Start the switch without connecting it to controller
-        net.get('s1').start([])
+	
 
         # Start the network.
         log.info('Starting network')
-        net.start()
+        # Starting the controller
+	log.info( 'Starting controllers')
+    	for controller in net.controllers:
+        	controller.start()	
+	# Start the switch without connecting it to controller
+        net.get('s1').start([])
+	# Starting other switches with connecting to controller
+	net.get('s2').start([c0])
+        # Start the network.
+        # log.info('Starting network')
+        # net.start()
 
         # 5. Configure the MAC address and IP address of the host interface that connects to dummy switch
         # info('*** Configure h1\'s controller communication interface\n')
