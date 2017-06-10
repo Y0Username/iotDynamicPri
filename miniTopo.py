@@ -92,7 +92,7 @@ def setup_topology():
             switches.append(s)
 	
 	# Connecting to VM interface
-        Intf('eth0', node=switches[0])
+        Intf('eth2', node=switches[0])
 
         for host in range(1,15):
             hname = 'h' + str(host)
