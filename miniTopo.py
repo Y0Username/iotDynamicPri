@@ -38,6 +38,9 @@ def setup_topology():
             log.info("Adding switch %s" % sname)
             s = net.addSwitch(sname, cls=OVSKernelSwitch)
             switches.append(s)
+	
+	# Connecting to VM interface
+        Intf('eth0', node=switches[0])
 
         for host in range(1,15):
             hname = 'h' + str(host)
@@ -69,7 +72,10 @@ def setup_topology():
                                    # , delay=_delay, jitter=_jitter, loss=_loss
                                    )
             links.append(l)
-
+	
+	# Link for internet
+	l = net.addLink('h1', 's1')
+	links.append(l)
 
         '''
         #Simple minimal topolgy code
@@ -101,6 +107,13 @@ def setup_topology():
         # Start the network
         log.info('Starting network')
         net.start()
+
+	# info('*** Configure h1\'s controller communication interface\n')
+        hosts[0].cmd('ifconfig h1-eth1 hw ether 00:00:00:00:01:11')
+
+        # info('*** Configure h1\'s IP address\n')
+        hosts[0].cmd('dhclient h1-eth1')
+
 
         # Drop the user in to a CLI so user can run commands.
         CLI( net )

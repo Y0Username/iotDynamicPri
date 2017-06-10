@@ -29,10 +29,10 @@ def setup_topology():
 
         #Adding a dummy switch for networking
         log.info("Adding standalone switch")
-        s1 = net.addSwitch('s1', cls=OVSKernelSwitch, failMode='standalone')
+        s1 = net.addSwitch('s1', cls=OVSKernelSwitch) #, failMode='standalone')
 
         # Connecting to VM interface
-        Intf('eth2', node=s1)
+        Intf('eth0', node=s1)
 
         log.info("Adding switch")
         s2 = net.addSwitch('s2', cls=OVSKernelSwitch)
@@ -42,7 +42,7 @@ def setup_topology():
         h2 = net.addHost('h2')
 
         log.info("Adding links")
-        l1 = net.addLink(h1, s2, intfName1='h1-eth0',
+        l1 = net.addLink(h1, s2,
                              cls=TCLink, bw=10
                              # , delay=_delay, jitter=_jitter, loss=_loss
                              )
@@ -51,8 +51,9 @@ def setup_topology():
                              # , delay=_delay, jitter=_jitter, loss=_loss
                              )
         # Add link between the host and standalone switch
-        l3 = net.addLink(h1, s1, intfName1='h1-eth1')
-
+        l3 = net.addLink(h1, s1)
+	# l4 = net.addLink(s1, s2)
+																				
         # Build the network.
         log.info('Building network')
         net.build()
@@ -65,7 +66,7 @@ def setup_topology():
     	for controller in net.controllers:
         	controller.start()	
 	# Start the switch without connecting it to controller
-        net.get('s1').start([])
+        net.get('s1').start([c0])
 	# Starting other switches with connecting to controller
 	net.get('s2').start([c0])
         # Start the network.
