@@ -38,8 +38,8 @@ def setup_topology():
         s2 = net.addSwitch('s2', cls=OVSKernelSwitch)
 
         log.info("Adding hosts")
-        h1 = net.addHost('h1')
-        h2 = net.addHost('h2')
+        h1 = net.addHost('h1', ip='10.0.5.1', mac='00:00:00:00:00:01')
+        h2 = net.addHost('h2', ip='10.0.5.2', mac='00:00:00:00:00:2')
 
         log.info("Adding links")
         l1 = net.addLink(h1, s2,

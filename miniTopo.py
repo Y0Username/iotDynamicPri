@@ -32,11 +32,11 @@ def setup_traffic_generators():
         However, we explicitly terminate the server anyway to avoid incompatibility issues."""
 
 	internet_hosts=['h3','h6','h9','h12']
-	stream_hosts=['h4','h7','h10','h13']        
-	
+	stream_hosts=['h4','h7','h10','h13']
+
         internet_srv = net.getNodeByName('h2')
 	edge_srv = net.getNodeByName('h1')
-	
+
 	generators = _get_mininet_nodes(internet_hosts)
         log.info("*** Starting background traffic generators for internet")
         # We enumerate the generators to fill the range of ports so that the server
@@ -70,7 +70,7 @@ def setup_topology():
         hosts = []
         switches = []
         links = []
-        
+
 
         log.info('Adding controller')
         c0 = net.addController(name='c0',
@@ -90,8 +90,8 @@ def setup_topology():
             log.info("Adding switch %s" % sname)
             s = net.addSwitch(sname, cls=OVSKernelSwitch)
             switches.append(s)
-	
-	# Connecting to VM interface
+
+	    # Connecting to VM interface
         Intf('eth2', node=switches[0])
 
         for host in range(1,15):
@@ -124,10 +124,10 @@ def setup_topology():
                                    # , delay=_delay, jitter=_jitter, loss=_loss
                                    )
             links.append(l)
-	
-	# Link for internet
-	l = net.addLink('h1', 's1')
-	links.append(l)
+
+    	# Link for internet
+    	l = net.addLink('h1', 's1')
+    	links.append(l)
 
         '''
         #Simple minimal topolgy code
@@ -154,21 +154,21 @@ def setup_topology():
 
         # Build the network
         log.info('Building network')
-        net.build()  	
-	
+        net.build()
+
         # Start the network
         log.info('Starting network')
         net.start()
 
-	# info('*** Configure h1\'s controller communication interface\n')
+	    # info('*** Configure h1\'s controller communication interface\n')
         hosts[0].cmd('ifconfig h1-eth1 hw ether 00:00:00:00:01:11')
 
         # info('*** Configure h1\'s IP address\n')
         hosts[0].cmd('dhclient h1-eth1')
 
-	net.pingAll()
-	#Starting the internet and stream traffic
-	setup_traffic_generators()
+    	net.pingAll()
+    	#Starting the internet and stream traffic
+    	setup_traffic_generators()
 
         # Drop the user in to a CLI so user can run commands.
         CLI( net )
@@ -183,7 +183,7 @@ if __name__ == '__main__':
     # This runs if this file is executed directly
     setLogLevel( 'info' )
     setup_topology()
-    
+
     #generators = _get_mininet_nodes(12)
     #print(generators)
 
