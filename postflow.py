@@ -3,29 +3,32 @@ import requests
 
 
 
-action = POST
-# path = 'http://192.168.56.101:8181/onos/v1//flows/'
+action = 'POST'
+# path = 'http://192.168.56.101:8181/onos/v1/flows/'
 server = '192.168.56.101'
 port = '8181'
-path = '/onos/v1//flows/'
+path = '/onos/v1/flows/'
 device1 = 'of:0000000000000001'
 device2 = 'of:0000000000000002'
 session = requests.Session()
 session.auth = ('onos', 'rocks')
-data1 = {
-    {"priority": 400000,
+datas = []
+data = {
+    "priority": 400000,
     "timeout": 0,
-    "isPermanent": true,
+    "isPermanent": True,
     "deviceId": "of:0000000000000001",
     "treatment":
     {"instructions": [{"type":"OUTPUT","port":"1"}]},
     "selector":
     {"criteria":[{"type":"IN_PORT","port":2},
     {"type":"ETH_DST","mac":"0E:4A:45:7C:75:C7"},
-    {"type":"ETH_SRC","mac":"5E:9D:C5:FF:74:42"}]}},
-    {"priority": 400000,
+    {"type":"ETH_SRC","mac":"5E:9D:C5:FF:74:42"}]}}
+datas.append(data)
+data = {
+    "priority": 400000,
     "timeout": 0,
-    "isPermanent": true,
+    "isPermanent": True,
     "deviceId": "of:0000000000000001",
     "treatment":
     {"instructions": [{"type":"OUTPUT","port":"2"}]},
@@ -33,22 +36,23 @@ data1 = {
     {"criteria":[{"type":"IN_PORT","port":1},
     {"type":"ETH_DST","mac":"5E:9D:C5:FF:74:42"},
     {"type":"ETH_SRC","mac":"0E:4A:45:7C:75:C7"}]}}
-    }
-
-data2 = {
-    {"priority": 400000,
+datas.append(data)
+data = {
+    "priority": 400000,
     "timeout": 0,
-    "isPermanent": true,
+    "isPermanent": True,
     "deviceId": "of:0000000000000002",
     "treatment":
     {"instructions":[{"type":"OUTPUT","port":"1"}]},
     "selector":
     {"criteria":[{"type":"IN_PORT","port":2},
     {"type":"ETH_DST","mac":"5E:9D:C5:FF:74:42"},
-    {"type":"ETH_SRC","mac":"0E:4A:45:7C:75:C7"}]}},
-    {"priority": 400000,
+    {"type":"ETH_SRC","mac":"0E:4A:45:7C:75:C7"}]}}
+datas.append(data)
+data = {
+    "priority": 400000,
     "timeout": 0,
-    "isPermanent": true,
+    "isPermanent": True,
     "deviceId": "of:0000000000000002",
     "treatment":
     {"instructions":[{"type":"OUTPUT","port":"2"}]},
@@ -56,17 +60,12 @@ data2 = {
     {"criteria":[{"type":"IN_PORT","port":1},
     {"type":"ETH_DST","mac":"0E:4A:45:7C:75:C7"},
     {"type":"ETH_SRC","mac":"5E:9D:C5:FF:74:42"}]}}
-    }
+datas.append(data)
 
 
+for data in datas:
+	req = requests.Request(action, 'http://%s:%s%s%s' % (server, port, path, data["deviceId"]),
+                       data=json.dumps(data), auth=session.auth)
+	resp = session.send(req.prepare())
+	resp.raise_for_status()
 
-
-req1 = requests.Request(action, 'http://%s:%s%s%s' % (server, port, path, device1),
-                       data=json.dumps(data1), auth=session.auth)
-resp1 = session.send(req1.prepare())
-resp1.raise_for_status()
-
-req2 = requests.Request(action, 'http://%s:%s%s%s' % (server, port, path, device2),
-                       data=json.dumps(data1), auth=session.auth)
-resp2 = session.send(req2.prepare())
-resp2.raise_for_status()
