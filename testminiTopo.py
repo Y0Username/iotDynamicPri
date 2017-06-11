@@ -56,27 +56,23 @@ def setup_topology():
         # Build the network.
         log.info('Building network')
         net.build()
-	
 
         # Start the network.
         log.info('Starting network')
+
         # Starting the controller
-	log.info( 'Starting controllers')
+	    log.info( 'Starting controllers')
     	for controller in net.controllers:
-        	controller.start()	
-	# Start the switch without connecting it to controller
+        	controller.start()
+
+        # Start the switch without connecting it to controller
         net.get('s1').start([])
-	# Starting other switches with connecting to controller
-	net.get('s2').start([c0])
-        # Start the network.
-        # log.info('Starting network')
+	    # Starting other switches with connecting to controller
+	    net.get('s2').start([c0])
         # net.start()
 
-        # 5. Configure the MAC address and IP address of the host interface that connects to dummy switch
-        # info('*** Configure h1\'s controller communication interface\n')
+        # Configure the MAC address and IP address of the host interface that connects to dummy switch
         h1.cmd('ifconfig h1-eth1 hw ether 00:00:00:00:01:11')
-
-        # info('*** Configure h1\'s IP address\n')
         h1.cmd('dhclient h1-eth1')
 
         # Drop the user in to a CLI so user can run commands.
@@ -91,7 +87,7 @@ if __name__ == '__main__':
     setLogLevel( 'info' )
     setup_topology()
 
-# Allows the file to be imported using `mn --custom <filename> --topo minimal`
+# Allows the file to be imported using `mn --custom <filename> --topo miniTopo`
 # topos = {
-#     'minimal': MinimalTopo
+#     'miniTopo': MiniTopo
 # }
