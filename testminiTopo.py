@@ -8,7 +8,7 @@ import logging as log
 
 CONTROLLER_IP = '192.168.56.101'
 CONTROLLER_PORT = 6653
-IP_BASE = '10.0.0.0/8'
+IP_BASE = '10.0.5.0/24'
 
 def setup_topology():
         """
@@ -32,7 +32,7 @@ def setup_topology():
         s1 = net.addSwitch('s1', cls=OVSKernelSwitch) #, failMode='standalone')
 
         # Connecting to VM interface
-        Intf('eth0', node=s1)
+        Intf('eth2', node=s1)
 
         log.info("Adding switch")
         s2 = net.addSwitch('s2', cls=OVSKernelSwitch)
@@ -62,14 +62,14 @@ def setup_topology():
         log.info('Starting network')
 
         # Starting the controller
-	    log.info( 'Starting controllers')
+	log.info( 'Starting controllers')
     	for controller in net.controllers:
         	controller.start()
 
         # Start the switch without connecting it to controller
-        net.get('s1').start([])
-	    # Starting other switches with connecting to controller
-	    net.get('s2').start([c0])
+        net.get('s1').start([c0])
+	# Starting other switches with connecting to controller
+	net.get('s2').start([c0])
 
         # net.start()
 

@@ -97,7 +97,7 @@ def setup_topology():
         for host in range(1,15):
             hname = 'h' + str(host)
             log.info("Adding host %s" % hname)
-            h = net.addHost(hname)
+            h = net.addHost(hname, ip=IP_PREFIX+str(host), mac=MAC_PREFIX+str(host))
             hosts.append(h)
 
         manual_links = [['s1', 'h1', 100], ['s1', 'h2', 100], ['s1', 's2', 50 ],
