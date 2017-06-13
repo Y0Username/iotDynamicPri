@@ -11,7 +11,10 @@ s3_internet_hosts=['10.0.5.9','10.0.5.12']
 s2_video_cameras=['10.0.5.4','10.0.5.7']
 s3_video_cameras=['10.0.5.10','10.0.5.11']
 
-def post_static_flows:
+#Queue 123 is low priority
+#Queue 234 is high priority
+
+def post_static_flows():
     for host in s2_internet_hosts:
         #TODO
         cmd = 'sudo ovs-ofctl add-flow s2 ip,priority=6653,nw_src='+host+',nw_dst='+internet+',idle_timeout=0,actions=set_queue:234,normal'

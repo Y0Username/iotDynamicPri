@@ -10,6 +10,7 @@ import os
 import add_queues
 import data_flows as df
 from configs import *
+import staticflow as sf
 
 LEVEL_1_BW=100
 LEVEL_2_BW=100
@@ -132,9 +133,10 @@ def setup_topology():
 
 	# Adding links with Queues with Linux HTB
 	add_queues.add_HTB_queues()
-    	
+    	sf.post_static_flows()
 	net.pingAll()
     	#Starting the internet and stream traffic
+
     	df.setup_traffic_generators(net)
 
         # Drop the user in to a CLI so user can run commands.
