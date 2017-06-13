@@ -31,11 +31,11 @@ def progress(t):
         if t==tmp/2:
 		df.post_dynamic_flows()
 	sleep(1)
-    	
+
     print '\r\n'
 
 
-def setup_traffic_generators(mininet):
+def setup_traffic_generators(mininet, EXPERIMENT_DURATION):
         """Each traffic generating host starts an iperf process aimed at
         (one of) the server(s) in order to generate random traffic and create
         congestion in the experiment.  Traffic is all UDP because it sets the bandwidth.
@@ -71,7 +71,7 @@ def setup_traffic_generators(mininet):
             i = g.popen('iperf3 -p %d -t %d -c %s -i %d -b %dM > /home/onos/iotDynamicPri/Results/Internet/%s.txt &' % (IPERF_INT_BASE_PORT + n, EXPERIMENT_DURATION, internet_srv.IP(), VER, INT_BAND, g), shell=True)
             #client_iperfs.append(i)
 
-	
+
 	generators = _get_mininet_nodes(mininet, stream_hosts)
         log.info("*** Starting background traffic generators for streaming")
         # We enumerate the generators to fill the range of ports so that the server
@@ -87,4 +87,3 @@ def setup_traffic_generators(mininet):
 	progress(EXPERIMENT_DURATION+5)
 	os.system('pkill iperf3')
 	os.system('pkill tcpdump')
-

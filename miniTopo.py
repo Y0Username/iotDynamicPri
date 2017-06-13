@@ -61,7 +61,7 @@ def setup_topology():
             hosts.append(h)
 
         manual_links = [['s1', 'h1', LEVEL_4_BW], ['s1', 'h2', LEVEL_4_BW], ['s1', 's2', 3 ],
-                        ['s1', 's3', 3 ], #['s2', 's3', 0 ], 
+                        ['s1', 's3', 3 ], #['s2', 's3', 0 ],
 			['s2', 's4', 2 ],
                         ['s2', 's5', 2 ], ['s3', 's6', 2 ], ['s3', 's7', 2 ],
                         ['s4', 'h3', LEVEL_1_BW ], ['s4', 'h4', LEVEL_1_BW ], ['s4', 'h5', LEVEL_1_BW ],
@@ -88,7 +88,7 @@ def setup_topology():
 	    else:
 		l = net.addLink(link[0], link[1], intfName2=link[1]+'-eth5')
 		links.append(l)
-	
+
 
     	# Link for internet
     	l = net.addLink('h1', 's1', intfName1='h1-eth1')
@@ -125,22 +125,32 @@ def setup_topology():
         log.info('Starting network')
         net.start()
 
-	# info('*** Configure h1\'s controller communication interface\n')
+	    # info('*** Configure h1\'s controller communication interface\n')
         hosts[0].cmd('ifconfig h1-eth1 hw ether 00:00:00:00:01:11')
 
         # info('*** Configure h1\'s IP address\n')
         #hosts[0].cmd('dhclient h1-eth1')
 
-	# Adding links with Queues with Linux HTB
-	add_queues.add_HTB_queues()
-    	sf.post_static_flows()
-	net.pingAll()
-    	#Starting the internet and stream traffic
+    	# Adding links with Queues with Linux HTB
+    	add_queues.add_HTB_queues()
 
+	    net.pingAll()
+    	#Starting the internet and stream traffic
     	df.setup_traffic_generators(net)
 
-        # Drop the user in to a CLI so user can run commands.
-        CLI( net )
+        while True:
+            user_input = raw_input("Input your choice: \n 1. Static \n 2. Dynamic \n 3. CLI \n")
+            if user_input=='static' or user_input=='Static' or user_input=='1':
+                sf.post_static_flows()
+                df.setup_traffic_generators(net, 30)
+            elif user_input=='dynamic' or user_input=='Dynamic' or user_input=='2':
+                sf.post_static_flows()
+                df.setup_traffic_generators(net, 60)
+            elif user_input=='cli' or user_input=='CLI' or user_input=='3':
+                # Drop the user in to a CLI so user can run commands.
+                CLI( net )
+            else:
+                continue
 
         # After the user exits the CLI, shutdown the network.
         log.info('Stopping network')
