@@ -9,7 +9,7 @@ level3Switches = ['s2','s3']
 s2_internet_hosts=['10.0.5.3','10.0.5.6']
 s3_internet_hosts=['10.0.5.9','10.0.5.12']
 s2_video_cameras=['10.0.5.4','10.0.5.7']
-s3_video_cameras=['10.0.5.10','10.0.5.11']
+s3_video_cameras=['10.0.5.10','10.0.5.13']
 
 #Queue 123 is low priority
 #Queue 234 is high priority

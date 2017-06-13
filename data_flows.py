@@ -8,6 +8,7 @@ import logging as log
 from OVSminiTopo import *
 from configs import *
 from time import sleep, time
+import dynamicflow as df
 import sys
 import os
 #client_iperfs=[]
@@ -22,11 +23,15 @@ def _get_mininet_nodes(mininet,nodes):
         """
         return [mininet.get(n) for n in nodes]
 def progress(t):
+    tmp=t
     while t > 0:
         print('  %3d seconds left  \r' % (t))
         t -= 1
         sys.stdout.flush()
-        sleep(1)
+        if t==tmp/2:
+		df.post_dynamic_flows()
+	sleep(1)
+    	
     print '\r\n'
 
 
