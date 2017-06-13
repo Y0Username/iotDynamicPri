@@ -1,3 +1,5 @@
 configs.py
-configs.pyc
+removed/
+*.pyc
+*.py~
 .gitignore
