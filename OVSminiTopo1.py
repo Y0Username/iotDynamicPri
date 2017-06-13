@@ -9,11 +9,7 @@ from configs import *
 
 client_iperfs=[]
 server_iperfs=[]
-net = Mininet(topo=None,
-                      build=False,
-                      ipBase='10.0.0.0/8',
-                      autoSetMacs=True,
-                      )
+
 def _get_mininet_nodes(nodes):
         """
         Choose the actual Mininet Hosts (rather than just strings) that will
@@ -70,7 +66,11 @@ def setup_topology():
         hosts = []
         switches = []
         links = []
-
+	net = Mininet(topo=None,
+                      build=False,
+                      ipBase='10.0.0.0/8',
+                      autoSetMacs=True,
+                      )
 
         log.info('Adding controller')
         c0 = net.addController(name='c0'
@@ -106,8 +106,7 @@ def setup_topology():
                         ['s4', 'h3', 10 ], ['s4', 'h4', 10 ], ['s4', 'h5', 10 ],
                         ['s5', 'h6', 10 ], ['s5', 'h7', 10 ], ['s5', 'h8', 10 ],
                         ['s6', 'h9', 10 ], ['s6', 'h10',10 ], ['s6', 'h11',10 ],
-                        ['s7', 'h12',10 ], ['s7', 'h13',10 ], ['s7', 'h14',10 ],
-                        ]
+                        ['s7', 'h12',10 ], ['s7', 'h13',10 ], ['s7', 'h14',10 ]]
         for link in manual_links:
             from_link = link[0]
             to_link = link[1]
