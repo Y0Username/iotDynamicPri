@@ -10,8 +10,8 @@ from configs import *
 from time import sleep, time
 import sys
 import os
-client_iperfs=[]
-server_iperfs=[]
+#client_iperfs=[]
+#server_iperfs=[]
 
 def _get_mininet_nodes(mininet,nodes):
         """
@@ -62,9 +62,9 @@ def setup_traffic_generators(mininet):
             log.info("iperf from %s to %s" % (g, internet_srv))
             # can't do self.net.iperf([g,s]) as there's no option to put it in the background
             i = internet_srv.popen('iperf3 -p %d -s > /home/onos/iotDynamicPri/Results/Internet/%s_%s.txt &' % (IPERF_INT_BASE_PORT + n, internet_srv,g), shell=True)
-            server_iperfs.append(i)
-            i = g.popen('iperf3 -p %d -t %d -c %s -i %d > /home/onos/iotDynamicPri/Results/Internet/%s.txt &' % (IPERF_INT_BASE_PORT + n, EXPERIMENT_DURATION, internet_srv.IP(), VER, g), shell=True)
-            client_iperfs.append(i)
+            #server_iperfs.append(i)
+            i = g.popen('iperf3 -p %d -t %d -c %s -i %d -b %dM > /home/onos/iotDynamicPri/Results/Internet/%s.txt &' % (IPERF_INT_BASE_PORT + n, EXPERIMENT_DURATION, internet_srv.IP(), VER, INT_BAND, g), shell=True)
+            #client_iperfs.append(i)
 
 	
 	generators = _get_mininet_nodes(mininet, stream_hosts)
@@ -74,13 +74,11 @@ def setup_traffic_generators(mininet):
         for n, g in enumerate(generators):
             log.info("iperf from %s to %s" % (g, edge_srv))
             # can't do self.net.iperf([g,s]) as there's no option to put it in the background
-	    print('iperf3 -p %d -t %d -u -b %dM -c %s -i %d > /home/onos/iotDynamicPri/Results/Stream/%s.txt &' % (IPERF_ST_BASE_PORT + n, EXPERIMENT_DURATION, ST_BAND, edge_srv.IP(), VER, g))
-	    print('iperf3 -p %d -s > /home/onos/iotDynamicPri/Results/Stream/%s_%s.txt &' % (IPERF_ST_BASE_PORT + n, edge_srv, g))
             i = edge_srv.popen('iperf3 -p %d -s > /home/onos/iotDynamicPri/Results/Stream/%s_%s.txt &' % (IPERF_ST_BASE_PORT + n, edge_srv, g), shell=True)
-	    print(i)
-            server_iperfs.append(i)
+
+            #server_iperfs.append(i)
 	    i = g.popen('iperf3 -p %d -t %d -u -b %dM -c %s -i %d > /home/onos/iotDynamicPri/Results/Stream/%s.txt &' % (IPERF_ST_BASE_PORT + n, EXPERIMENT_DURATION, ST_BAND, edge_srv.IP(), VER, g), shell=True)
-            client_iperfs.append(i)
+            #client_iperfs.append(i)
 	progress(EXPERIMENT_DURATION+5)
 	os.system('pkill iperf3')
 	os.system('pkill tcpdump')
