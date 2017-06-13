@@ -5,7 +5,15 @@ from mininet.cli import CLI
 from mininet.link import TCLink, Intf
 from mininet.log import setLogLevel
 import logging as log
+from subprocess import Popen, PIPE
+import os
+import add_queues
 from configs import *
+
+LEVEL_1_BW=100
+LEVEL_2_BW=100
+LEVEL_3_BW=150
+LEVEL_4_BW=300
 
 client_iperfs=[]
 server_iperfs=[]
@@ -91,7 +99,7 @@ def setup_topology():
             s = net.addSwitch(sname, cls=OVSKernelSwitch)
             switches.append(s)
 
-	    # Connecting to VM interface
+	# Connecting to VM interface
         Intf('eth2', node=switches[0])
 
         for host in range(1,15):
@@ -100,14 +108,14 @@ def setup_topology():
             h = net.addHost(hname, ip=IP_PREFIX+str(host), mac=MAC_PREFIX+str(host))
             hosts.append(h)
 
-        manual_links = [['s1', 'h1', 100], ['s1', 'h2', 100], ['s1', 's2', 50 ],
-                        ['s1', 's3', 50 ], ['s2', 's3', 50 ], ['s2', 's4', 50 ],
-                        ['s2', 's5', 50 ], ['s3', 's6', 50 ], ['s3', 's7', 50 ],
-                        ['s4', 'h3', 10 ], ['s4', 'h4', 10 ], ['s4', 'h5', 10 ],
-                        ['s5', 'h6', 10 ], ['s5', 'h7', 10 ], ['s5', 'h8', 10 ],
-                        ['s6', 'h9', 10 ], ['s6', 'h10',10 ], ['s6', 'h11',10 ],
-                        ['s7', 'h12',10 ], ['s7', 'h13',10 ], ['s7', 'h14',10 ],
-                        ]
+        manual_links = [['s1', 'h1', LEVEL_4_BW], ['s1', 'h2', LEVEL_4_BW], ['s1', 's2', 3 ],
+                        ['s1', 's3', 3 ], #['s2', 's3', 0 ], 
+			['s2', 's4', 2 ],
+                        ['s2', 's5', 2 ], ['s3', 's6', 2 ], ['s3', 's7', 2 ],
+                        ['s4', 'h3', LEVEL_1_BW ], ['s4', 'h4', LEVEL_1_BW ], ['s4', 'h5', LEVEL_1_BW ],
+                        ['s5', 'h6', LEVEL_1_BW ], ['s5', 'h7', LEVEL_1_BW ], ['s5', 'h8', LEVEL_1_BW ],
+                        ['s6', 'h9', LEVEL_1_BW ], ['s6', 'h10',LEVEL_1_BW ], ['s6', 'h11',LEVEL_1_BW ],
+                        ['s7', 'h12',LEVEL_1_BW ], ['s7', 'h13',LEVEL_1_BW ], ['s7', 'h14',LEVEL_1_BW ]]
         for link in manual_links:
             from_link = link[0]
             to_link = link[1]
@@ -119,14 +127,19 @@ def setup_topology():
             _jitter = '1ms'
             _loss = error_rate
             '''
-            l = net.addLink(net.get(from_link), net.get(to_link),
+	    if bw not in [2,3]:
+            	l = net.addLink(net.get(from_link), net.get(to_link),
                                    cls=TCLink, bw=bw
                                    # , delay=_delay, jitter=_jitter, loss=_loss
                                    )
-            links.append(l)
+            	links.append(l)
+	    else:
+		l = net.addLink(link[0], link[1], intfName2=link[1]+'-eth5')
+		links.append(l)
+	
 
     	# Link for internet
-    	l = net.addLink('h1', 's1')
+    	l = net.addLink('h1', 's1', intfName1='h1-eth1')
     	links.append(l)
 
         '''
@@ -160,15 +173,18 @@ def setup_topology():
         log.info('Starting network')
         net.start()
 
-	    # info('*** Configure h1\'s controller communication interface\n')
+	# info('*** Configure h1\'s controller communication interface\n')
         hosts[0].cmd('ifconfig h1-eth1 hw ether 00:00:00:00:01:11')
 
         # info('*** Configure h1\'s IP address\n')
         hosts[0].cmd('dhclient h1-eth1')
 
-    	net.pingAll()
+	# Adding links with Queues with Linux HTB
+	add_queues.add_HTB_queues(manual_links)
+    	
+	net.pingAll()
     	#Starting the internet and stream traffic
-    	setup_traffic_generators()
+    	# setup_traffic_generators()
 
         # Drop the user in to a CLI so user can run commands.
         CLI( net )
