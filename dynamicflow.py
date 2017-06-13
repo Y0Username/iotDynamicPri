@@ -17,9 +17,9 @@ def post_dynamic_flows():
     cmd = 'sudo ovs-ofctl mod-flows s3 ip,nw_dst='+edgeserver+',actions=set_queue:234,NORMAL'
     os.system(cmd)
 
-    cmd = 'sudo ovs-ofctl mod-flows s2 ip,nw_dst='+internet+',actions=set_queue:234,NORMAL'
+    cmd = 'sudo ovs-ofctl mod-flows s2 ip,nw_dst='+internet+',actions=set_queue:123,NORMAL'
     os.system(cmd)
-    cmd = 'sudo ovs-ofctl mod-flows s3 ip,nw_dst='+internet+',actions=set_queue:234,NORMAL'
+    cmd = 'sudo ovs-ofctl mod-flows s3 ip,nw_dst='+internet+',actions=set_queue:123,NORMAL'
     os.system(cmd)
 
 if __name__ == '__main__':
